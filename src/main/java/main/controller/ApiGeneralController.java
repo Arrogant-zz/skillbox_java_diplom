@@ -1,18 +1,19 @@
 package main.controller;
 
-import main.model.BlogInfo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import main.data.response.InitResponse;
+import main.service.InitService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@AllArgsConstructor
 public class ApiGeneralController {
-    @Autowired
-    BlogInfo blogInfo;
+    private InitService initService;
 
     @GetMapping("/api/init")
-    public BlogInfo init() {
-        return blogInfo;
+    public InitResponse init() {
+        return initService.response();
     }
 
 }
