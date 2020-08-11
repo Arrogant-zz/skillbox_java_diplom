@@ -17,11 +17,11 @@ public class Post {
     @Column(name = "is_active", nullable = false, columnDefinition = "TINYINT")
     private boolean isActive = false;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "moderator_id", referencedColumnName = "id")
     private User moderator;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User author;
 

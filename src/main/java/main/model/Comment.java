@@ -30,4 +30,7 @@ public class Comment {
 
     @Column(columnDefinition = "text", nullable = false)
     private String text;
+
+    @Column(name = "post_id", nullable = false, insertable = false, updatable = false)
+    private int postId;
 }
