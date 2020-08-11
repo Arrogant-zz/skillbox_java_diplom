@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class ListPostResponse {
     private List<PostInListPost> posts;
+    private long count;
 
     public ListPostResponse(List<PostInListPost> posts) {
         this.posts = posts;
@@ -16,10 +17,5 @@ public class ListPostResponse {
 
     public void add(List<PostInListPost> posts) {
         this.posts.addAll(posts);
-    }
-
-    @JsonGetter("count")
-    public int count() {
-        return posts.size();
     }
 }
