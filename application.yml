@@ -4,6 +4,12 @@ spring.datasource.password: 12345678
 spring.jpa.hibernate.ddl-auto: validate
 spring.jpa.show-sql: true
 spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+app:
+  param:
+    captcha:
+      width: 100
+      height: 35
+      deletePeriod: 3600
 blog:
   info:
     title: DevPub
