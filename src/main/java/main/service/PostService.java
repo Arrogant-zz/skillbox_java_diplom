@@ -6,6 +6,7 @@ import main.data.IVoteCount;
 import main.data.request.ListPostRequest;
 import main.data.response.type.PostInListPost;
 import main.data.response.ListPostResponse;
+import main.model.ModerationStatus;
 import main.model.Post;
 import main.repository.CommentRepository;
 import main.repository.PostRepository;
@@ -70,5 +71,9 @@ public class PostService {
         listPostResponse.setCount(page.getTotalElements());
 
         return listPostResponse;
+    }
+
+    public long countPostInModeration() {
+        return postRepository.countByModerationStatus(ModerationStatus.NEW);
     }
 }

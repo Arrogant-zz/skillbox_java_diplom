@@ -10,7 +10,8 @@ public class AuthCheckResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private UserAuth user;
 
-    public AuthCheckResponse(boolean result) {
+    public AuthCheckResponse(boolean result, UserAuth user) {
         this.result = result;
+        this.user = user;
     }
 }

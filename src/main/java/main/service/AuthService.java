@@ -3,9 +3,11 @@ package main.service;
 import com.github.cage.Cage;
 import com.github.cage.image.Painter;
 import lombok.RequiredArgsConstructor;
+import main.core.ContextUtilities;
 import main.data.request.LoginRequest;
 import main.data.request.RegisterRequest;
 import main.data.response.*;
+import main.data.response.type.UserAuth;
 import main.model.Captcha;
 import main.model.User;
 import main.repository.CaptchaRepository;
@@ -36,6 +38,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final PostService postService;
 
     @Value("${app.param.captcha.height}")
     private int captchaHeight;
@@ -46,8 +49,21 @@ public class AuthService {
 
     public AuthCheckResponse check() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        AuthCheckResponse authCheckResponse = new AuthCheckResponse(!(authentication instanceof AnonymousAuthenticationToken));
-        return authCheckResponse;
+        boolean isAuthenticated = !(authentication instanceof AnonymousAuthenticationToken);
+
+        UserAuth userAuth = null;
+
+        if (isAuthenticated) {
+            userAuth = new UserAuth(
+                    ContextUtilities.getCurrentUser(),
+                    postService.countPostInModeration()
+            );
+        }
+
+        return new AuthCheckResponse(
+                isAuthenticated,
+                userAuth
+        );
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -58,7 +74,12 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new LoginResponse();
+        UserAuth userAuth = new UserAuth(
+                ContextUtilities.getCurrentUser(),
+                postService.countPostInModeration()
+        );
+
+        return new LoginResponse(true, userAuth);
     }
 
     public LogoutResponse logout() {
