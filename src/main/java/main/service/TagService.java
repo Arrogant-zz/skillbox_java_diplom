@@ -19,7 +19,6 @@ public class TagService {
     private TagRepository tagRepository;
 
     public ListTagResponse response(ListTagRequest request) {
-        System.out.println(request);
         List<TagInListTag> tags = new ArrayList<>();
         tagRepository.findAll().forEach(t -> tags.add(new TagInListTag(t)));
         return new ListTagResponse(tags);

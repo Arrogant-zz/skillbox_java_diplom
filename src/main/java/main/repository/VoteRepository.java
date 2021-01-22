@@ -1,6 +1,6 @@
 package main.repository;
 
-import main.data.IVoteCount;
+import main.model.query.IVoteCount;
 import main.model.Vote;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

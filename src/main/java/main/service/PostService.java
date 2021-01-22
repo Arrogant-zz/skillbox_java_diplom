@@ -2,7 +2,7 @@ package main.service;
 
 import lombok.AllArgsConstructor;
 import main.core.OffsetPageRequest;
-import main.data.IVoteCount;
+import main.model.query.IVoteCount;
 import main.data.request.ListPostRequest;
 import main.data.response.type.PostInListPost;
 import main.data.response.ListPostResponse;
@@ -12,8 +12,6 @@ import main.repository.CommentRepository;
 import main.repository.PostRepository;
 import main.repository.VoteRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 

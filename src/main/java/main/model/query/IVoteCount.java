@@ -1,4 +1,4 @@
-package main.data;
+package main.model.query;
 
 public interface IVoteCount {
     boolean getValue();
