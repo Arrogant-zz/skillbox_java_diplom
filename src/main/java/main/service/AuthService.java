@@ -82,10 +82,10 @@ public class AuthService {
         return new LoginResponse(true, userAuth);
     }
 
-    public LogoutResponse logout() {
+    public ResultResponse logout() {
         SecurityContextHolder.clearContext();
 
-        return new LogoutResponse();
+        return new ResultResponse();
     }
 
     public RegisterResponse register(RegisterRequest request) {

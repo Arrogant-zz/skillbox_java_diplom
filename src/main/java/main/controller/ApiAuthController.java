@@ -6,9 +6,6 @@ import main.data.request.RegisterRequest;
 import main.data.response.*;
 import main.service.AuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +39,7 @@ public class ApiAuthController {
     }
 
     @GetMapping("/api/auth/logout")
-    public ResponseEntity<LogoutResponse> logout() {
+    public ResponseEntity<ResultResponse> logout() {
         return ResponseEntity.ok(authService.logout());
     }
 }
