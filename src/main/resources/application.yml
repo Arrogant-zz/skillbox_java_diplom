@@ -1,0 +1,24 @@
+spring:
+  profiles:
+    active: @spring.profiles.active@
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+app:
+  param:
+    captcha:
+      width: 100
+      height: 35
+      deletePeriod: 3600
+blog:
+  info:
+    title: DevPub
+    subtitle: Рассказы разработчиков
+    phone: +7 903 666-44-55
+    email: mail@mail.ru
+    copyright: Есипов Сергей
+    copyrightFrom: 2020

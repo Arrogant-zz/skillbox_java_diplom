@@ -1,9 +1,10 @@
 package main.controller;
 
 import lombok.AllArgsConstructor;
-import main.data.request.PostRequest;
-import main.data.response.PostsResponse;
+import main.data.request.ListPostRequest;
+import main.data.response.ListPostResponse;
 import main.service.PostService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 public class ApiPostController {
     private PostService postService;
 
-    @GetMapping("/api/post")
-    public PostsResponse get(PostRequest request) {
-        return postService.response(request);
+    @GetMapping(value = {"/api/post", "/api/post/search"})
+    public ResponseEntity<ListPostResponse> get(ListPostRequest request) {
+        return ResponseEntity.ok(postService.response(request));
     }
 }

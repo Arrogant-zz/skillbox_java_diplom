@@ -26,4 +26,7 @@ public class Vote {
 
     @Column(nullable = false, columnDefinition = "TINYINT")
     private boolean value;
+
+    @Column(name = "post_id", nullable = false, insertable = false, updatable = false)
+    private int postId;
 }
