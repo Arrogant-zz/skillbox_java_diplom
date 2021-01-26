@@ -27,11 +27,15 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<IPostCount> getCountByYear(int year);
 
     @Query(
-            value = "SELECT COUNT(1) AS count FROM posts " +
+            value = "SELECT COUNT(1) AS count FROM posts p " +
+                    "LEFT JOIN tag2post t2p ON p.id = t2p.post_id AND ?3 IS NOT NULL " +
+                    "LEFT JOIN tags t ON t2p.tag_id = t.id AND ?3 IS NOT NULL " +
                     "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= NOW() " +
-                    "      AND (UPPER(title) LIKE UPPER(CONCAT('%', ?1, '%')) OR UPPER(text) LIKE UPPER(CONCAT('%', ?1, '%')))",
+                    "      AND (UPPER(title) LIKE UPPER(CONCAT('%', ?1, '%')) OR UPPER(text) LIKE UPPER(CONCAT('%', ?1, '%'))) " +
+                    "      AND (DATE(p.time) = ?2 OR ?2 IS NULL) " +
+                    "      AND (t.name = ?3 OR ?3 IS NULL)",
             nativeQuery = true
     )
-    long countPostSearch(@NotNull String search);
+    long countPostSearch(@NotNull String search, String byDate, String tag);
 }
 

@@ -24,13 +24,17 @@ public class PostService {
     public ListPostResponse response(ListPostRequest request) {
         String search = Optional.ofNullable(request.getQuery()).orElse("");
         String mode = Optional.ofNullable(request.getMode()).orElse("recent");
+        String byDate = request.getDate();
+        String tag = request.getTag();
 
         List<PostInListPost> posts = entityManager
                 .createNamedQuery("PostWithStat", Tuple.class)
                 .setParameter("offset", request.getOffset())
                 .setParameter("limit", request.getLimit())
-                .setParameter("sortType", request.getMode())
+                .setParameter("sortType", mode)
                 .setParameter("search", search)
+                .setParameter("byDate", byDate)
+                .setParameter("tag", tag)
                 .getResultStream()
                 .map(p -> {
                     PostInListPost post = new PostInListPost((Post) p.get(0));
@@ -42,7 +46,7 @@ public class PostService {
                 .collect(Collectors.toList());
 
         ListPostResponse listPostResponse = new ListPostResponse(posts);
-        listPostResponse.setCount(postRepository.countPostSearch(search));
+        listPostResponse.setCount(postRepository.countPostSearch(search, byDate, tag));
 
         return listPostResponse;
     }
