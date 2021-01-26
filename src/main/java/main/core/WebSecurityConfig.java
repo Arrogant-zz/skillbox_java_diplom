@@ -4,6 +4,7 @@ import main.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,10 +29,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .csrf()
                     .disable()
+                .antMatcher("/api/**")
                 .authorizeRequests()
-                    .antMatchers("/**").permitAll()
-                    //.antMatchers("/api/**").hasRole("USER")
-                ;
+                .antMatchers("/api/auth/login", "/api/auth/register").not().authenticated()
+                .antMatchers(
+                        "/api/post/my",
+                        "/api/profile/my",
+                        "/api/statistics/my",
+                        "/api/post/like",
+                        "/api/post/dislike",
+                        "/api/auth/logout"
+                ).authenticated()
+                .antMatchers(HttpMethod.POST,
+                        "/api/post",
+                        "/api/image",
+                        "/api/comment"
+                ).authenticated()
+                .antMatchers(HttpMethod.PUT, "/api/post/**").authenticated()
+                .antMatchers("/api/post/moderation", "/api/moderation").hasRole("MODERATOR")
+                .antMatchers(HttpMethod.PUT, "/api/settings").hasRole("MODERATOR")
+                .antMatchers("/api/**").permitAll()
+        ;
     }
 
     @Override
