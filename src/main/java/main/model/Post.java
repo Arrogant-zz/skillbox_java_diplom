@@ -19,8 +19,12 @@ import java.util.List;
                     "FROM posts p " +
                     "LEFT JOIN post_comments com ON com.post_id = p.id " +
                     "LEFT JOIN post_votes v ON v.post_id = p.id " +
+                    "LEFT JOIN tag2post t2p ON p.id = t2p.post_id AND :tag IS NOT NULL " +
+                    "LEFT JOIN tags t ON t2p.tag_id = t.id AND :tag IS NOT NULL " +
                     "WHERE p.is_active = 1 AND p.moderation_status = 'ACCEPTED' AND p.time <= NOW() " +
                     "      AND (UPPER(p.title) LIKE UPPER(CONCAT('%', :search, '%')) OR UPPER(p.text) LIKE UPPER(CONCAT('%', :search, '%'))) " +
+                    "      AND (DATE(p.time) = :byDate OR :byDate IS NULL) " +
+                    "      AND (t.name = :tag OR :tag IS NULL) " +
                     "GROUP BY p.id" +
                 ") AS result " +
                 "ORDER BY " +
