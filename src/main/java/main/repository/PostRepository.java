@@ -4,13 +4,10 @@ import com.sun.istack.NotNull;
 import main.model.ModerationStatus;
 import main.model.Post;
 import main.model.query.IPostCount;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -30,7 +27,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<IPostCount> getCountByYear(int year);
 
     @Query(
-            value = "SELECT COUNT(1) AS count FROM posts "+
+            value = "SELECT COUNT(1) AS count FROM posts " +
                     "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= NOW() " +
                     "      AND (UPPER(title) LIKE UPPER(CONCAT('%', ?1, '%')) OR UPPER(text) LIKE UPPER(CONCAT('%', ?1, '%')))",
             nativeQuery = true
