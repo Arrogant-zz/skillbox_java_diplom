@@ -25,7 +25,6 @@ import java.util.List;
                 "CASE WHEN :sortType = 'recent' THEN p.time " +
                 "     WHEN :sortType = 'popular' THEN comment_count " +
                 "     WHEN :sortType = 'best' THEN like_count " +
-                "     ELSE p.time " +
                 "END DESC, " +
                 "CASE WHEN :sortType = 'early' THEN p.time " +
                 "END " +

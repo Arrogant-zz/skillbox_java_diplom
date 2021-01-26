@@ -24,6 +24,7 @@ public class PostService {
 
     public ListPostResponse response(ListPostRequest request) {
         String search = Optional.ofNullable(request.getQuery()).orElse("");
+        String mode = Optional.ofNullable(request.getMode()).orElse("recent");
 
         List<PostInListPost> posts = entityManager
                 .createNamedQuery("PostWithStat", Tuple.class)
