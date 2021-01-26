@@ -14,6 +14,7 @@ public class ApiPostController {
 
     @GetMapping(value = {"/api/post", "/api/post/search", "/api/post/byDate", "/api/post/byTag"})
     public ResponseEntity<ListPostResponse> get(ListPostRequest request) {
+        System.out.println(request);
         return ResponseEntity.ok(postService.response(request));
     }
 }
