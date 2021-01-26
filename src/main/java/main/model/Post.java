@@ -11,22 +11,24 @@ import java.util.List;
 @Data
 @NamedNativeQuery(
         name = "PostWithStat",
-        query = "SELECT p.*, " +
-                "COUNT(com.id) AS comment_count, " +
-                "IFNULL(SUM(v.value), 0) AS like_count, " +
-                "IFNULL(COUNT(v.value) - SUM(v.value), 0) AS dislike_count " +
-                "FROM blog.posts p " +
-                "LEFT JOIN blog.post_comments com ON com.post_id = p.id " +
-                "LEFT JOIN blog.post_votes v ON v.post_id = p.id " +
-                "WHERE p.is_active = 1 AND p.moderation_status = 'ACCEPTED' AND p.time <= NOW() " +
-                "      AND (UPPER(p.title) LIKE UPPER(CONCAT('%', :search, '%')) OR UPPER(p.text) LIKE UPPER(CONCAT('%', :search, '%'))) " +
-                "GROUP BY p.id " +
+        query = "SELECT * FROM (" +
+                    "SELECT p.*, " +
+                    "COUNT(com.id) AS comment_count, " +
+                    "IFNULL(SUM(v.value), 0) AS like_count, " +
+                    "IFNULL(COUNT(v.value) - SUM(v.value), 0) AS dislike_count " +
+                    "FROM posts p " +
+                    "LEFT JOIN post_comments com ON com.post_id = p.id " +
+                    "LEFT JOIN post_votes v ON v.post_id = p.id " +
+                    "WHERE p.is_active = 1 AND p.moderation_status = 'ACCEPTED' AND p.time <= NOW() " +
+                    "      AND (UPPER(p.title) LIKE UPPER(CONCAT('%', :search, '%')) OR UPPER(p.text) LIKE UPPER(CONCAT('%', :search, '%'))) " +
+                    "GROUP BY p.id" +
+                ") AS result " +
                 "ORDER BY " +
-                "CASE WHEN :sortType = 'recent' THEN p.time " +
+                "CASE WHEN :sortType = 'recent' THEN time " +
                 "     WHEN :sortType = 'popular' THEN comment_count " +
                 "     WHEN :sortType = 'best' THEN like_count " +
                 "END DESC, " +
-                "CASE WHEN :sortType = 'early' THEN p.time " +
+                "CASE WHEN :sortType = 'early' THEN time " +
                 "END " +
                 "LIMIT :offset, :limit",
         resultSetMapping = "PostWithStatisticMapping"
