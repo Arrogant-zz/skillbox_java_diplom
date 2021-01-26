@@ -16,7 +16,7 @@ public class CalendarService {
     private final PostRepository postRepository;
 
     public CalendarResponse response(CalendarRequest request) {
-        List<Integer> years = postRepository.getAllYear();
+        List<Integer> years = postRepository.getAllYears();
         List<IPostCount> posts = postRepository.getCountByYear(request.getYear());
 
         return new CalendarResponse(

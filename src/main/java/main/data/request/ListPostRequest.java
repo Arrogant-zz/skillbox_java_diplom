@@ -7,4 +7,5 @@ public class ListPostRequest {
     private int offset;
     private int limit;
     private String mode;
+    private String query;
 }

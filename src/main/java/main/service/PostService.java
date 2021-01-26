@@ -1,72 +1,48 @@
 package main.service;
 
 import lombok.AllArgsConstructor;
-import main.core.OffsetPageRequest;
-import main.model.query.IVoteCount;
 import main.data.request.ListPostRequest;
-import main.data.response.type.PostInListPost;
 import main.data.response.ListPostResponse;
+import main.data.response.type.PostInListPost;
 import main.model.ModerationStatus;
 import main.model.Post;
-import main.repository.CommentRepository;
 import main.repository.PostRepository;
-import main.repository.VoteRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class PostService {
-    private PostRepository postRepository;
-    private VoteRepository voteRepository;
-    private CommentRepository commentRepository;
+    private final PostRepository postRepository;
+    private final EntityManager entityManager;
 
     public ListPostResponse response(ListPostRequest request) {
-        Sort sort = null;
+        String search = Optional.ofNullable(request.getQuery()).orElse("");
 
-        switch(request.getMode()) {
-            case "recent":
-                sort = Sort.by("time").descending();
-                break;
-            case "popular":
-            case "best":
-                break;
-            case "early":
-                sort = Sort.by("time").ascending();
-                break;
-            default:
-                sort = Sort.by("id").descending();
-                break;
-        }
-
-        OffsetPageRequest pageable = new OffsetPageRequest(request.getOffset(), request.getLimit(), sort);
-
-        List<PostInListPost> posts = new ArrayList<>();
-        Page<Post> page = postRepository.findAll(pageable);
-
-        page.forEach(p -> {
-            PostInListPost post = new PostInListPost(p);
-
-            List<IVoteCount> votes = voteRepository.countTotalVotesByPostId(post.getId());
-            for (IVoteCount vote : votes) {
-                if (vote.getValue()) {
-                    post.setLikeCount(vote.getCount());
-                } else {
-                    post.setDislikeCount(vote.getCount());
-                }
-            }
-
-            post.setCommentCount(commentRepository.countByPostId(post.getId()));
-
-            posts.add(post);
-        });
+        List<PostInListPost> posts = entityManager
+                .createNamedQuery("PostWithStat", Tuple.class)
+                .setParameter("offset", request.getOffset())
+                .setParameter("limit", request.getLimit())
+                .setParameter("sortType", request.getMode())
+                .setParameter("search", search)
+                .getResultStream()
+                .map(p -> {
+                    PostInListPost post = new PostInListPost((Post) p.get(0));
+                    post.setCommentCount((int) p.get(1));
+                    post.setLikeCount((int) p.get(2));
+                    post.setDislikeCount((int) p.get(3));
+                    return post;
+                })
+                .collect(Collectors.toList());
 
         ListPostResponse listPostResponse = new ListPostResponse(posts);
-        listPostResponse.setCount(page.getTotalElements());
+        listPostResponse.setCount(postRepository.countPostSearch(search));
 
         return listPostResponse;
     }

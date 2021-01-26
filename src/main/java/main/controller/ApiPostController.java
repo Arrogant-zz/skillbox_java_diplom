@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class ApiPostController {
     private PostService postService;
 
-    @GetMapping("/api/post")
+    @GetMapping(value = {"/api/post", "/api/post/search"})
     public ResponseEntity<ListPostResponse> get(ListPostRequest request) {
         return ResponseEntity.ok(postService.response(request));
     }
