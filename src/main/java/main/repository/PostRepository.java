@@ -4,6 +4,7 @@ import com.sun.istack.NotNull;
 import main.model.ModerationStatus;
 import main.model.Post;
 import main.model.query.IPostCount;
+import main.model.query.IStatistic;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -37,5 +38,26 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             nativeQuery = true
     )
     long countPostSearch(@NotNull String search, String byDate, String tag);
+
+    @Query(
+            value = "SELECT p_stat.postsCount, " +
+                    "       v_stat.likesCount, " +
+                    "       v_stat.dislikesCount, " +
+                    "       p_stat.viewsCount, " +
+                    "       p_stat.firstPublication " +
+                    "FROM (SELECT COUNT(p.id) AS postsCount, " +
+                    "             IFNULL(SUM(p.view_count), 0) AS viewsCount, " +
+                    "             MIN(p.time) AS firstPublication " +
+                    "      FROM posts p " +
+                    "      WHERE p.user_id = :userId OR :userId = 0 " +
+                    "     ) p_stat, " +
+                    "     (SELECT IFNULL(SUM(pv.value), 0) AS likesCount, " +
+                    "             IFNULL(COUNT(pv.id) - SUM(pv.value), 0) AS dislikesCount " +
+                    "      FROM post_votes pv, posts p " +
+                    "      WHERE pv.post_id = p.id AND (p.user_id = :userId OR :userId = 0) " +
+                    "     ) v_stat",
+            nativeQuery = true
+    )
+    IStatistic getStatistic(int userId);
 }
 
